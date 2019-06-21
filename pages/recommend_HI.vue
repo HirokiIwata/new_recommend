@@ -24,7 +24,6 @@
     v-for="(item,index) in data_query"
     :key="index">
       <div
-      font size = "4"
       v-if="q_num==index+1">
         <div v-for="item_a in item"
         :key="item_a.tag_id">
@@ -32,7 +31,7 @@
           height = 3
           v-model="selected"
           :label="item_a.tag"
-          :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
+          :value="[item_a.tag,item_a.tag_id]">font size = "6"</v-checkbox>
         </div>
       </div>
     </div>
