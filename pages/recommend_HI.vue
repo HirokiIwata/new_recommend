@@ -558,7 +558,7 @@ export default {
 } */
 .query{
   font-weight: bold;
-  font-size: 2em;
+  font-size: 5em;
 }
 .title{
   font-size: 14px;
@@ -585,7 +585,6 @@ export default {
   font-weight: bold;
 }
 .container {
-  font-size: 300px;
   min-height: 100vh;
   justify-content: center;
   align-items: center;
