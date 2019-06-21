@@ -29,8 +29,8 @@
         :key="item_a.tag_id">
           <v-checkbox
           height = 2
+          size = "7"
           v-model="selected"
-          :size = 7
           :label="item_a.tag"
           :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
         </div>
