@@ -28,7 +28,6 @@
         <div v-for="item_a in item"
         :key="item_a.tag_id">
           <v-checkbox
-          font-size = 10
           height = 2
           v-model="selected"
           :label="item_a.tag"
@@ -559,7 +558,7 @@ export default {
 } */
 .query{
   font-weight: bold;
-  font-size: 2em;
+  font-size: 4em;
 }
 .title{
   font-size: 14px;
