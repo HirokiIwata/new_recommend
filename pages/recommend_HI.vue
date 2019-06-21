@@ -24,7 +24,7 @@
     v-for="(item,index) in data_query"
     :key="index">
       <div
-      font size = "6"
+      font size = "4"
       v-if="q_num==index+1">
         <div v-for="item_a in item"
         :key="item_a.tag_id">
