@@ -26,6 +26,7 @@
       <div
       v-if="q_num==index+1">
         <div v-for="item_a in item"
+        :size = 50
         :key="item_a.tag_id">
           <v-checkbox
           height = 3
