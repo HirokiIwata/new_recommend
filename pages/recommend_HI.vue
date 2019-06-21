@@ -558,7 +558,7 @@ export default {
 } */
 .query{
   font-weight: bold;
-  font-size: 10em;
+  font-size: 30px;
 }
 .title{
   font-size: 14px;
