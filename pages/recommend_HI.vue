@@ -26,10 +26,9 @@
       <div
       v-if="q_num==index+1">
         <div v-for="item_a in item"
-        font size = 6
         :key="item_a.tag_id">
           <v-checkbox
-          height = 2
+          height = 5
           v-model="selected"
           :label="item_a.tag"
           :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
