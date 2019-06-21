@@ -26,11 +26,11 @@
       <div
       v-if="q_num==index+1">
         <div v-for="item_a in item"
-        :size = 50
         :key="item_a.tag_id">
           <v-checkbox
-          height = 3
+          height = 2
           v-model="selected"
+          :size = 6
           :label="item_a.tag"
           :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
         </div>
