@@ -26,9 +26,9 @@
       <div
       v-if="q_num==index+1">
         <div v-for="item_a in item"
+        style="width:200px;height:50px"
         :key="item_a.tag_id">
           <v-checkbox
-          style="width:200px;height:50px"
           height = 3
           v-model="selected"
           :label="item_a.tag"
