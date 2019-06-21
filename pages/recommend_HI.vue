@@ -28,7 +28,7 @@
         <div v-for="item_a in item"
         :key="item_a.tag_id">
           <v-checkbox
-          style="width:50px;height:50px"
+          style="width:200px;height:200px"
           height = 3
           v-model="selected"
           :label="item_a.tag"
