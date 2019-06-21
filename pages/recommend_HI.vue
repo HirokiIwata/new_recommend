@@ -585,6 +585,7 @@ export default {
   font-weight: bold;
 }
 .container {
+  font-size: 300px;
   min-height: 100vh;
   justify-content: center;
   align-items: center;
