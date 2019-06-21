@@ -28,10 +28,11 @@
         <div v-for="item_a in item"
         :key="item_a.tag_id">
           <v-checkbox
+          style="width:50px;height:50px"
           height = 3
           v-model="selected"
           :label="item_a.tag"
-          :value="[item_a.tag,item_a.tag_id]">font size = "6"</v-checkbox>
+          :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
         </div>
       </div>
     </div>
