@@ -21,6 +21,7 @@ export default {
 .container {
   min-height: 100vh;
   display: flex;
+  font-size: 200px;
   justify-content: center;
   align-items: center;
   text-align: center;
