@@ -16,7 +16,7 @@
             color="blue lighten-2"
             dark
             large
-            href="/recommend_web"
+            href="/recommend_hi"
           >
             推薦ページへ行く
           </v-btn>
