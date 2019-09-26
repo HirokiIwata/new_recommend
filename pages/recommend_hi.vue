@@ -1,11 +1,6 @@
 <template>
   <section>
-    <!-- <div>
-     //デバッグゾーン
-      {{q_num}}
-      {{visitor_tags}}
-    </div> -->
-
+  
     <div v-if="q_num==0" class="title">
       <h3><p>展示物推薦のページです<br><br>
       表示される語句の中から<br>気になるものを<br>
@@ -107,14 +102,8 @@
       </v-layout>
     </div>
 
-    <!-- テストボタン -->
-    <!-- <div>
-      <v-btn v-if="q_num==0" round color="primary" large v-on:click="show_result">テスト</v-btn>
-    </div> -->
-
-    <!-- スタートボタン -->
     <div>
-      <v-btn v-if="q_num==0" round color="primary" large v-on:click="web_reccomend">スタート</v-btn>
+      <v-btn v-if="q_num==0" round color="primary" large v-on:click="web_recommend">スタート</v-btn>
     </div>
 
     <!-- 初期ロード表示 -->
@@ -128,7 +117,8 @@
     </div>
 
     <div>
-      <v-btn v-if="q_num!=0&&data_query&&0<=q_num&&q_num<=data_query.length" round color="primary" large v-on:click="get_checkbox">次へ</v-btn>
+      <v-btn v-if="q_num!=0&&data_query&&0<=q_num&&q_num<=data_query.length" 
+      round color="primary" large v-on:click="get_checkbox">次へ</v-btn>
     </div>
 
     <div v-if="q_num!=0&&data_query&&q_num>data_query.length">
@@ -256,9 +246,8 @@ export default {
         {tag:'放射線',tag_id: 50},
         {tag:'イオン',tag_id: 51}
         ],
-      data_query: null, // , {tag:'ブラックホール',tag_id: 48}, {tag:'ブラックホール',tag_id: 55}
+      data_query: null,
       visitor_tags: [],
-      // visitor_tags_test: [['万有引力',26],['ケプラー',28] , ['ブラックホール', 29], ['ニュートン', 27], ['物理法則',30]],
       selected: [],
       recommend_exhibits: []
     }
@@ -389,48 +378,10 @@ export default {
 	       return 0;
       });
 
-      // console.log(exhibits_list)
-      // for(let i=0; i<recommend_num; i++){
-      //   var arrObj = {};
-      //   for (var n = 0; n < exhibits_list[i].length; n++) {
-      //     arrObj[tmp_json[n]['basis']] = tmp_json[n];
-      //   }
-      //   tmp_json = [];
-      //   for (var key in arrObj) {
-      //     tmp_json.push(arrObj[key]);
-      //   }
-      // }
-
-
       for(let i=0; i<recommend_num; i++){
-      //   var overlap = exhibits_list[i].basis.filter(function (x, i, self) {
-      //       return self.indexOf(x) !== self.lastIndexOf(x);
-      //   });
-        // console.log(exhibits_list[i].basis)
         var unique = exhibits_list[i].basis.filter(function (x, i, self) {
             return self.indexOf(x) === i;
         });
-
-
-        // x3 とかの表示
-        // console.log(overlap)
-        // console.log(unique)
-        //
-        // var counts = {};
-        //
-        // for(var k=0;k< overlap.length;k++)
-        // {
-        //   var key = overlap[k];
-        //   counts[key] = (counts[key])? counts[key] + 1 : 1 ;
-        // }
-
-        // for(let v in counts){
-        //   for(let j=0; j<unique.length; j++){
-        //     if(v===unique[j]){
-        //       unique[j] = unique[j] + "x" + counts[v]
-        //     }
-        //   }
-        // }
 
         exhibits_list[i].basis = unique
         // console.log(exhibits_list)
@@ -448,27 +399,10 @@ export default {
       this.q_num++;
       this.selected.length = 0;
     },
-    web_reccomend: function (event) {
-      // this.$router.push({ path: 'hoge', query: { plan: 'pri', aaa: 'AAA'}})
-      // console.log(this.json)
-      // const tmp = this.json.find(function(element){
-      //   return element.id == 3078
-      // })
-      // const tmp = this.json.filter(function(element){
-      //   return element.visitor_tag_id == 30
-      // })
-      // console.log(tmp)
-      // this.result = tmp[0].id
-      // this.isResultShow = true
-      // ここにオススメプログラムをつらつらと書いていく
-      // let tags;
-      // tags = this.json.filter(function(element){
-      //   return element.visitor_tag_id == 2
-      // })
+    web_recommend: function (event) {
       let array = this.v_tags;
       let v_tags; //来館者タグ一覧
       const q_tag_num = 7 //一回あたりのタグ提示数
-      // let tags
       let q_times = []
       let query = []
 
@@ -517,29 +451,16 @@ export default {
 
 
   created() {
-    //do something after creating vue instance
-    // console.log('こんいgんkg')
     this.json = require('../static/new_recommend_deviation.json')
-    // this.q_num = 0;
   },
 
   mounted() {
-    //do something before mounting vue instance
     this.q_num = 0;
   }
-  // asyncData(){
-  //   // console.log('testss')
-  //   return{
-  //     json:require('../static/mysql.json')
-  //   }
-  // }
 }
 </script>
 
 <style>
-/* .basis{
-  width: 350px;
-} */
 .query{
   font-weight: bold;
   font-size: 2em;
