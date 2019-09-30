@@ -361,9 +361,9 @@ export default {
         for(let exhibit of exhibits_list){
           console.log(exhibit);
           console.log(exhibit.exhibit_tag)
-          if(exhibit.exhibit_tag.indexOf(vtag.tag) >= 0){
+          if(exhibit.exhibit_tag.indexOf(vtag[0]) >= 0){
             exhibit.point += 1;
-            exhibit.basis.push(vtag.tag);
+            exhibit.basis.push(vtag[0]);
           }
         }
       }
