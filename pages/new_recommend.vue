@@ -348,7 +348,6 @@ export default {
       let visitor_tags = this.visitor_tags
       let db = [];
 
-
       // 「分析中...」の表示
       this.interval = setInterval(() => {
         if (this.value === 110) {
@@ -361,6 +360,7 @@ export default {
         console.log(vtag);
         for(let exhibit of exhibits_list){
           console.log(exhibit);
+          console.log(exhibit.exhibit_tag)
           if(exhibit.exhibit_tag.indexOf(vtag) >= 0){
             exhibit.point += 1;
             exhibit.basis.push(vtag);
