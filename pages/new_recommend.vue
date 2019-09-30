@@ -1,7 +1,7 @@
 <template>
   <section>
   
-    <div v-if="q_num==0" class="title">
+    <div v-if="page_count==0" class="title">
       <h3><p>展示物推薦のページです<br><br>
       表示される語句の中から<br>気になるものを<br>
       選んでください<br>(複数回答可)</p></h3>
@@ -9,8 +9,8 @@
     </div>
 
     <!-- 質問の進捗表示 -->
-    <div v-if="q_num>0&&q_num<=data_query.length">
-      {{q_num}}/{{data_query.length}}
+    <div v-if="page_count>0 && page_count<=data_query.length">
+      {{page_count}}/{{data_query.length}}
     </div>
 
     <!-- 質問表示 -->
@@ -19,12 +19,12 @@
     v-for="(item,index) in data_query"
     :key="index">
       <div
-      v-if="q_num==index+1">
+      v-if="page_count==index+1">
         <div v-for="item_a in item"
         :key="item_a.tag_id">
           <v-checkbox
           height = 2
-          v-model="selected"
+          v-model="selected_items"
           :size = "200"
           :label="item_a.tag"
           :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
@@ -35,7 +35,7 @@
 
     <!-- 推薦展示物表示 -->
     <div
-    v-if="q_num==-10000">
+    v-if="page_count==-10000">
       <v-layout column width="350px"
       v-for="(item,index) in recommend_exhibits"
       :key="index">
@@ -103,13 +103,13 @@
     </div>
 
     <div>
-      <v-btn v-if="q_num==0" round color="primary" large v-on:click="web_recommend">スタート</v-btn>
+      <v-btn v-if="page_count==0" round color="primary" large v-on:click="web_recommend">スタート</v-btn>
     </div>
 
     <!-- 初期ロード表示 -->
     <div class="loading">
       <v-progress-circular
-      v-if="q_num==-5000"
+      v-if="page_count==-5000"
       :size="50"
       color="primary"
       indeterminate
@@ -117,17 +117,17 @@
     </div>
 
     <div>
-      <v-btn v-if="q_num!=0&&data_query&&0<=q_num&&q_num<=data_query.length" 
+      <v-btn v-if="page_count!=0&&data_query&&0<=page_count&&page_count<=data_query.length" 
       round color="primary" large v-on:click="get_checkbox">次へ</v-btn>
     </div>
 
-    <div v-if="q_num!=0&&data_query&&q_num>data_query.length">
+    <div v-if="page_count!=0&&data_query&&page_count>data_query.length">
       <p>お疲れ様でした！</p>
       <v-btn round color="primary" large v-on:click="show_result">結果を表示する</v-btn>
     </div>
 
     <!-- ロード中 -->
-    <div v-if="q_num==-9000">
+    <div v-if="page_count==-9000">
       <v-progress-circular
       :buffer-value="10"
       :rotate="-90"
@@ -157,7 +157,7 @@ export default {
       show: {0: false, 1: false, 2: false},
       json: null,
       result: null,
-      q_num: -5000,
+      page_count: -5000,
       v_tags:[
         {tag:'月',tag_id:1},
         {tag:'かぐや',tag_id: 2},
@@ -248,166 +248,154 @@ export default {
         ],
       data_query: null,
       visitor_tags: [],
-      selected: [],
+      selected_items: [],
       recommend_exhibits: []
     }
   },
   methods: {
     show_result: function(event){
 
-      this.q_num = -9000 //値は適当です
+      this.page_count = -9000 //値は適当です
       const recommend_num = 3; //オススメする展示物の数
-      const adopted_num = 3; //pmi上位採用数
-      let a518 = {id: 518,exhibit: "5. 月の満ち欠け",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/57",point: 0,pmi: 0,basis: [],src: require("../static/A518-photo.jpg"),map: require("../static/map5.jpg")}
-      let a521 = {id: 521,exhibit: "7. 惑星の動きと引力",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/65",point: 0,pmi: 0,basis: [],src: require("../static/A521-photo.jpg"),map: require("../static/map7.jpg")}
-      let a522 = {id: 522,exhibit: "6. 惑星探査",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/60",point: 0,pmi: 0,basis: [],src: require("../static/A522-photo.jpg"),map: require("../static/map6.jpg")}
-      let a527 = {id: 527,exhibit: "14. 銀河系と天の川",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/58",point: 0,pmi: 0,basis: [],src: require("../static/A527-photo.jpg"),map: require("../static/map14.jpg")}
-      let a529 = {id: 529,exhibit: "1. プラネタリウムの歴史",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/74",point: 0,pmi: 0,basis: [],src: require("../static/A529-photo.jpg"),map: require("../static/map1.jpg")}
-      let a534 = {id: 534,exhibit: "16. デジタルタイムカプセル",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/67",point: 0,pmi: 0,basis: [],src: require("../static/A534-photo.jpg"),map: require("../static/map16.jpg")}
-      let a501 = {id: 501,exhibit: "2. 古代人の宇宙",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/56",point: 0,pmi: 0,basis: [],src: require("../static/A501-photo.jpg"),map: require("../static/map2.jpg")}
-      let a502 = {id: 502,exhibit: "4. 天動説から地動説へ",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/69",point: 0,pmi: 0,basis: [],src: require("../static/A502-photo.jpg"),map: require("../static/map4.jpg")}
-      let a503 = {id: 503,exhibit: "3. 江戸時代の天文学",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/62",point: 0,pmi: 0,basis: [],src: require("../static/A503-photo.jpg"),map: require("../static/map3.jpg")}
-      let a504 = {id: 504,exhibit: "9. 光学望遠鏡のしくみ",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/75",point: 0,pmi: 0,basis: [],src: require("../static/A504-photo.jpg"),map: require("../static/map9.jpg")}
-      let a505 = {id: 505,exhibit: "8. 望遠鏡をのぞいてみよう",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/59",point: 0,pmi: 0,basis: [],src: require("../static/A505-photo.jpg"),map: require("../static/map8.jpg")}
-      let a508 = {id: 508,exhibit: "10. さまざまな波長",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/66",point: 0,pmi: 0,basis: [],src: require("../static/A508-photo.jpg"),map: require("../static/map10.jpg")}
-      let a509 = {id: 509,exhibit: "13. 分光観測とスペクトル",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/70",point: 0,pmi: 0,basis: [],src: require("../static/A509-photo.jpg"),map: require("../static/map13.jpg")}
-      let a510 = {id: 510,exhibit: "12. 電波天文学",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/61",point: 0,pmi: 0,basis: [],src: require("../static/A510-photo.jpg"),map: require("../static/map12.jpg")}
-      let a512 = {id: 512,exhibit: "15. X線天文学",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/72",point: 0,pmi: 0,basis: [],src: require("../static/A512-photo.jpg"),map: require("../static/map15.jpg")}
-      let a513 = {id: 513,exhibit: "17. 市街光と星空",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/71",point: 0,pmi: 0,basis: [],src: require("../static/A513-photo.jpg"),map: require("../static/map17.jpg")}
-      let a515 = {id: 515,exhibit: "11. 宇宙線をみる",url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/73",point: 0,pmi: 0,basis: [],src: require("../static/A515-photo.jpg"),map: require("../static/map11.jpg")}
+
+      let a518 = {id: 518, exhibit: "5. 月の満ち欠け", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/57", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['月', 'かぐや', '衛星'], 
+                  src: require("../static/A518-photo.jpg"),  
+                  map: require("../static/map5.jpg")}
+      let a521 = {id: 521, exhibit: "7. 惑星の動きと引力", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/65", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['惑星', '引力', 'ブラックホール'], 
+                  src: require("../static/A521-photo.jpg"), 
+                  map: require("../static/map7.jpg")}
+      let a522 = {id: 522, exhibit: "6. 惑星探査", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/60", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['惑星', '探査機', '人工衛星'], 
+                  src: require("../static/A522-photo.jpg"), 
+                  map: require("../static/map6.jpg")}
+      let a527 = {id: 527, exhibit: "14. 銀河系と天の川", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/58", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['銀河系', '天の川', '太陽系'], 
+                  src: require("../static/A527-photo.jpg"), 
+                  map: require("../static/map14.jpg")}
+      let a529 = {id: 529, exhibit: "1. プラネタリウムの歴史", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/74", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['プラネタリウム', '歴史', '旧名古屋市科学館'], 
+                  src: require("../static/A529-photo.jpg"), 
+                  map: require("../static/map1.jpg")}
+      let a534 = {id: 534, exhibit: "16. デジタルタイムカプセル", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/67", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['タイムカプセル', '思い出', '旧名古屋市科学館'], 
+                  src: require("../static/A534-photo.jpg"), 
+                  map: require("../static/map16.jpg")}
+      let a501 = {id: 501, exhibit: "2. 古代人の宇宙", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/56", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['古代', '神話', '遺跡'], 
+                  src: require("../static/A501-photo.jpg"), 
+                  map: require("../static/map2.jpg")}
+      let a502 = {id: 502, exhibit: "4. 天動説から地動説へ", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/69", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['天動説', '地動説', 'ガリレオ'], 
+                  src: require("../static/A502-photo.jpg"), 
+                  map: require("../static/map4.jpg")}
+      let a503 = {id: 503, exhibit: "3. 江戸時代の天文学", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/62", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['江戸時代', '歴史', '古美術'], 
+                  src: require("../static/A503-photo.jpg"), 
+                  map: require("../static/map3.jpg")}
+      let a504 = {id: 504, exhibit: "9. 光学望遠鏡のしくみ", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/75", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['望遠鏡', 'レンズ', '鏡'], 
+                  src: require("../static/A504-photo.jpg"), 
+                  map: require("../static/map9.jpg")}
+      let a505 = {id: 505, exhibit: "8. 望遠鏡をのぞいてみよう", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/59", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['望遠鏡', '観測', '倍率'], 
+                  src: require("../static/A505-photo.jpg"), 
+                  map: require("../static/map8.jpg")}
+      let a508 = {id: 508, exhibit: "10. さまざまな波長", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/66", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['X線', '紫外線', '電波'], 
+                  src: require("../static/A508-photo.jpg"), 
+                  map: require("../static/map10.jpg")}
+      let a509 = {id: 509, exhibit: "13. 分光観測とスペクトル", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/70", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['光', '色', '波長'], 
+                  src: require("../static/A509-photo.jpg"), 
+                  map: require("../static/map13.jpg")}
+      let a510 = {id: 510, exhibit: "12. 電波天文学", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/61", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['電波', 'アンテナ', '観測'], 
+                  src: require("../static/A510-photo.jpg"), 
+                  map: require("../static/map12.jpg")}
+      let a512 = {id: 512, exhibit: "15. X線天文学", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/72", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['X線', '人工衛星', '望遠鏡'], 
+                  src: require("../static/A512-photo.jpg"), 
+                  map: require("../static/map15.jpg")}
+      let a513 = {id: 513, exhibit: "17. 市街光と星空", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/71", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['星空', '光害', '名古屋'], 
+                  src: require("../static/A513-photo.jpg"), 
+                  map: require("../static/map17.jpg")}
+      let a515 = {id: 515, exhibit: "11. 宇宙線をみる", 
+                  url: "https://heroku-app-mobileguide.herokuapp.com/exhibits/73", 
+                  point: 0, pmi: 0, basis: [], exhibit_tag: ['宇宙線', '放射線', 'イオン'], 
+                  src: require("../static/A515-photo.jpg"), 
+                  map: require("../static/map11.jpg")}
 
       let exhibits_list = [a518,a521,a522,a527,a529,a534,a501,a502,a503,a504,a505,a508,a509,a510,a512,a513,a515]
       let visitor_tags = this.visitor_tags
       let db = [];
 
 
-      //分析中...表示用
+      // 「分析中...」の表示
       this.interval = setInterval(() => {
         if (this.value === 110) {
-          // return (this.value = 0)
-          this.q_num = -10000
+          this.page_count = -10000;
         }
-        this.value += 5
-      }, 200)
+        this.value += 5;
+      }, 200);
 
-      console.log(visitor_tags)
-      for(let v of visitor_tags){
-        let tmp_json = [];
-        let tmp = this.json.filter(function(element){ // 条件式が渡されると合致する要素を取り出す
-          return element.visitor_tag_id == v[1] // 来館者タグをjsonファイルから検索, v[1]はtag_id
-        })
-        // console.log(tmp)
-        for (let w of tmp){
-          let tmp1 = {}
-          tmp1.exhibit = w.exhibit
-          tmp1.exhibit_id = w.exhibit_id
-          tmp1.exhibit_tag = w.exhibit_tag
-          tmp1.visitor_tag = w.visitor_tag
-          tmp1.visitor_tag_id = w.visitor_tag_id
-          tmp1.pmi = w.pmi_diff_from_med
-          tmp_json.push(tmp1)
-        }
-        // console.log(tmp_json)
-        db.push(tmp_json)
-      }
-      // console.log(db)
-      // 以下，来館者タグの重複を考慮した処理
-      let db_unique = []
-      for(let d of db){
-        var arrObj = {};
-        for (var n = 0; n < d.length; n++) {
-          arrObj[d[n]['exhibit_tag']] = d[n];
-        }
-        d = [];
-        for (var key in arrObj) {
-          d.push(arrObj[key]);
-        }
-        db_unique.push(d)
-      }
-
-      // console.log(db)
-      let db_sorted = [];
-      for(let v of db_unique){
-        v.sort((a, b) => {
-        if (a.pmi > b.pmi) return -1;
-        if (a.pmi < b.pmi) return 1;
-        return 0;
-        });
-        db_sorted.push(v)
-      }
-      console.log(db_sorted)
-      for(let v of db_sorted){ // v = 65行
-        // console.log(v)
-        for(let i=0; i<adopted_num; i++){
-          let tmp_exhibit_tag = v[i].exhibit_tag
-          let tmp_exhibit_id = v[i].exhibit_id
-          let tmp_json = this.json.filter(function(element){
-            return element.exhibit_tag == tmp_exhibit_tag
-          })
-          // console.log(tmp_json)
-
-          // tmp_jsonの重複除去
-          var arrObj = {};
-          for (var n = 0; n < tmp_json.length; n++) {
-            arrObj[tmp_json[n]['exhibit']] = tmp_json[n];
-          }
-          tmp_json = [];
-          for (var key in arrObj) {
-            tmp_json.push(arrObj[key]);
-          }
-
-          // console.log(tmp_json)
-          for(let l of tmp_json){
-            for(let w of exhibits_list){
-              if(w.id===l.exhibit_id){
-                w.point++;
-                w.pmi=w.pmi+(Math.round(v[i].pmi*100))/100;
-                w.basis.push(v[i].visitor_tag)
-                // console.log(exhibits_list)
-              }
-            }
+      for(let vtag of visitor_tags){
+        console.log(vtag);
+        for(let exhibit of exhibits_list){
+          console.log(exhibit);
+          if(exhibit.exhibit_tag.indexOf(vtag) >= 0){
+            exhibit.point += 1;
+            exhibit.basis.push(vtag);
           }
         }
       }
 
       exhibits_list.sort(function(a, b){
-	       if (a.point < b.point) return 1;
-	       if (a.point > b.point) return -1;
-         if (a.pmi < b.pmi) return 1;
-	       if (a.pmi > b.pmi) return -1;
-	       return 0;
+	     if (a.point < b.point) return 1;
+	     if (a.point > b.point) return -1;
+       return 0;
       });
 
       for(let i=0; i<recommend_num; i++){
-        var unique = exhibits_list[i].basis.filter(function (x, i, self) {
-            return self.indexOf(x) === i;
-        });
-
-        exhibits_list[i].basis = unique
-        // console.log(exhibits_list)
         this.recommend_exhibits.push(exhibits_list[i])
       }
-      // console.log(this.recommend_exhibits)
-
     },
 
     get_checkbox: function(event){
-      // this.visitor_tags.push(this.selected[0])
-      for(let i=0; i<this.selected.length; i++){
-        this.visitor_tags.push(this.selected[i])
+      for(let i=0; i<this.selected_items.length; i++){
+        this.visitor_tags.push(this.selected_items[i])
       }
-      this.q_num++;
-      this.selected.length = 0; // 1ページ進むごとに配列を初期化
+      this.page_count++;
+      this.selected_items.length = 0; // 1ページ進むごとに配列を初期化
     },
+
     web_recommend: function (event) {
       let array = this.v_tags;
       let v_tags; //来館者タグ一覧
       const q_tag_num = 7 //一回あたりのタグ提示数
-      let q_times = [] 
+      let q_times = []
       let query = []
 
-       // 来館者タグ候補をシャッフル
-      for(let i = array.length - 1; i > 0; i--){
+      // 来館者タグ候補をシャッフル
+      for(let i = array.length-1; i>0; i--){
         let r = Math.floor(Math.random() * (i + 1));
         let tmp = array[i];
         array[i] = array[r];
@@ -416,7 +404,7 @@ export default {
       }
       // 質問クエリの単語数を決める
       let tmp = v_tags.length%q_tag_num
-      if (tmp <= Math.ceil(q_tag_num/2)){ // ceil: q_tag_num/2より大きい最小の整数を算出
+      if (tmp<=Math.ceil(q_tag_num/2)){ // ceil: q_tag_num/2より大きい最小の整数を算出
         for (let i=0; i<tmp; i++){
           q_times.push(q_tag_num+1);
         }
@@ -443,21 +431,16 @@ export default {
 
       this.data_query = query; // dataに入れ込んでhtmlに反映
 
-      this.q_num++;
-
-      // console.log(this.q_num)
-
+      this.page_count++;
     }
   },
-
-
 
   created() {
     this.json = require('../static/new_recommend_deviation.json')
   },
 
   mounted() {
-    this.q_num = 0;
+    this.page_count = 0;
   }
 }
 </script>

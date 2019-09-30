@@ -16,7 +16,7 @@
             color="blue lighten-2"
             dark
             large
-            href="/recommend_hi"
+            href="/new_recommend"
           >
             推薦ページへ行く
           </v-btn>
@@ -43,12 +43,12 @@
           <v-container grid-list-xl>
             <v-layout row wrap align-center justify-center justify-content >
               <v-card flat class="transparent">
-                <router-link to="/recommend_web">
+                <router-link to="/new_recommend">
                   <v-card-text class="text-xs-center">
                     <v-icon x-large class="blue--text text--lighten-2">build</v-icon>
                   </v-card-text>
                 </router-link>
-                <router-link to="/recommend_web">
+                <router-link to="/new_recommend">
                   <v-card-title primary-title class="layout justify-center">
                     <div class="headline text-xs-center">展示物推薦</div>
                   </v-card-title>
@@ -114,7 +114,7 @@
             color="blue lighten-2"
             dark
             large
-            href="/recommend_web"
+            href="/new_recommend"
           >
             Get Started
           </v-btn>
