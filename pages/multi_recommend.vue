@@ -333,78 +333,20 @@ export default {
         this.recommend_exhibits.push(exhibits_list[i])
       }
 
-      function makeApiCall() {
-        var params = {
-            // The ID of the spreadsheet to retrieve data from.
-            spreadsheetId: '12ZftsGFxqwAw278FWBvIjkICemr1BnG_lhKjMjdXTBE',  // TODO: Update placeholder value.
-
-            // The A1 notation of the values to retrieve.
-            range: 'sheet1',  // TODO: Update placeholder value.
-
-            // How values should be represented in the output.
-            // The default render option is ValueRenderOption.FORMATTED_VALUE.
-            valueRenderOption: '',  // TODO: Update placeholder value.
-
-            // How dates, times, and durations should be represented in the output.
-            // This is ignored if value_render_option is
-            // FORMATTED_VALUE.
-            // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
-            dateTimeRenderOption: '',  // TODO: Update placeholder value.
-        };
-
-        var request = gapi.client.sheets.spreadsheets.values.get(params);
-        request.then(function(response) {
-          // TODO: Change code below to process the `response` object:
-          console.log(response.result);
-          }, function(reason) {
-          console.error('error: ' + reason.result.error.message);
-        });
-      }
-
-      function initClient() {
-        var API_KEY = 'AIzaSyA8ehMZYKnaFZTSNfWcfQRwE6MVXLXrjSc';  // TODO: Update placeholder with desired API key.
-
-        var CLIENT_ID = '178072879019-hup08tcbt51k0ciir87bpobl72bja4tu.apps.googleusercontent.com';  // TODO: Update placeholder with desired client ID.
-
-        // TODO: Authorize using one of the following scopes:
-        //   'https://www.googleapis.com/auth/drive'
-        //   'https://www.googleapis.com/auth/drive.file'
-        //   'https://www.googleapis.com/auth/drive.readonly'
-        //   'https://www.googleapis.com/auth/spreadsheets'
-        //   'https://www.googleapis.com/auth/spreadsheets.readonly'
-        var SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
-
+      gapi.load('client:auth2', ()=> {
         gapi.client.init({
-          'apiKey': API_KEY,
-          'clientId': CLIENT_ID,
-          'scope': SCOPE,
-          'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-        }).then(function() {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
-          updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        });
-      }
+          clientId: '178072879019-hup08tcbt51k0ciir87bpobl72bja4tu.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/spreadsheets',
+          discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+        })
+      });
 
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
-
-      function updateSignInStatus(isSignedIn) {
-        if (isSignedIn) {
-          makeApiCall();
-        }
-      }
-
-      function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
-
-      function handleSignOutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-      }
-
-      handleSignInClick();
-
+      gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: '12ZftsGFxqwAw278FWBvIjkICemr1BnG_lhKjMjdXTBE',
+        range: 'sheet1' // rangeの指定(<YOUR Sheet Name>!A2:E)
+      }).then((res)=>{
+        console.log(res.result.value);
+      });
     },
 
     get_checkbox: function(event){
@@ -472,11 +414,9 @@ export default {
   }
 }
 </script>
-<script async defer src="https://apis.google.com/js/api.js"
-  onload="this.onload=function(){};handleClientLoad()"
-  onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
 
+<script async defer src="https://apis.google.com/js/api.js">
+</script>
 
 <style>
 .query{
