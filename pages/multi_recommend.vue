@@ -420,7 +420,10 @@ export default {
 
 </script>
 
-<script async defer src="https://apis.google.com/js/api.js">
+<!--<script async defer src="https://apis.google.com/js/api.js">
+</script> -->
+
+<script src="https://apis.google.com/js/api.js">
 </script>
 
 <style>
