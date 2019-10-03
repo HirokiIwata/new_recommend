@@ -333,11 +333,11 @@ export default {
         this.recommend_exhibits.push(exhibits_list[i])
       }
 
-/*      gapi.load('client:auth2', ()=> {
+      gapi.load('client:auth2', ()=> {
         gapi.client.init({
-          'apiKey': AIzaSyA8ehMZYKnaFZTSNfWcfQRwE6MVXLXrjSc,
-          'clientId': 178072879019-hup08tcbt51k0ciir87bpobl72bja4tu.apps.googleusercontent.com,
-          'scope': https://www.googleapis.com/auth/spreadsheets,
+          'apiKey': 'AIzaSyA8ehMZYKnaFZTSNfWcfQRwE6MVXLXrjSc',
+          'clientId': '178072879019-hup08tcbt51k0ciir87bpobl72bja4tu.apps.googleusercontent.com',
+          'scope': 'https://www.googleapis.com/auth/spreadsheets',
           'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
         })
       });
@@ -348,7 +348,7 @@ export default {
       }).then((res)=>{
         console.log(res.result.value);
       });
-*/
+
     },
 
     get_checkbox: function(event){
@@ -416,14 +416,8 @@ export default {
   }
 }
 
-  //script(src='https://apis.google.com/js/api.js')
+  script(src='https://apis.google.com/js/api.js')
 
-</script>
-
-<!--<script async defer src="https://apis.google.com/js/api.js">
-</script> -->
-
-<script src="https://apis.google.com/js/api.js">
 </script>
 
 <style>
