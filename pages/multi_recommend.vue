@@ -420,8 +420,8 @@ export default {
 
 </script>
 
-<script async defer src="https://apis.google.com/js/api.js">
-</script>
+<!--<script async defer src="https://apis.google.com/js/api.js">
+</script> -->
 
 <style>
 .query{
