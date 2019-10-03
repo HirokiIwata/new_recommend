@@ -414,10 +414,13 @@ export default {
     this.page_count = 0;
   }
 }
+
+  script(src='https://apis.google.com/js/api.js')
+
 </script>
 
-<script async defer src="https://apis.google.com/js/api.js">
-</script>
+<!-- <script async defer src="https://apis.google.com/js/api.js">
+</script> -->
 
 <style>
 .query{
