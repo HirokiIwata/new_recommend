@@ -25,7 +25,7 @@
           <v-checkbox
           height = 2
           v-model="selected_items"
-          :size = "200"
+          :size = "300"
           :label="item_a.tag"
           :value="[item_a.tag,item_a.tag_id]"></v-checkbox>
         </div>
