@@ -390,10 +390,6 @@ export default {
     }
   },
 
-  created() {
-    this.json = require('../static/new_recommend_deviation.json')
-  },
-
   mounted() {
     this.page_count = 0;
   }
