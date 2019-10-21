@@ -15,7 +15,6 @@
   "dependencies": {
     "@nuxtjs/vuetify": "^0.4.3",
     "nuxt": "^2.0.0",
-    "vue": "^2.6.10",
     "vue-jsonp": "^0.1.8"
   },
   "devDependencies": {
