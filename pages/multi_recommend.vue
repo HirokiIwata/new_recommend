@@ -143,13 +143,7 @@
   </section>
 </template>
 
-
-
-
 <script>
-import Vue from 'vue'
-import VueJsonp from 'vue-jsonp'
-Vue.use(VueJsonp)
 
 const sheetsApiUrl = 'https://script.google.com/macros/s/AKfycbwOYKsnjEqM6U6kT9amzgzRVIfV5DsfqhYUs6_v-V05KaEfOoW9/exec'
 

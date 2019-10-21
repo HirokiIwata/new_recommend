@@ -6,6 +6,10 @@ module.exports = {
     '@nuxtjs/vuetify'
   ],
 
+  plugins: [
+    '@/plugins/vue_jsonp',
+  ],
+
   vuetify: {
     // Vuetify の設定はここに書く
     theme: {
@@ -47,6 +51,11 @@ module.exports = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
+      }
+      config.node = {
+        fs: 'empty',
+        googleapis: 'empty',
+        child_process: 'empty'
       }
     }
   }
