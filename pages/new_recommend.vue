@@ -312,10 +312,7 @@ export default {
       }, 200);
 
       for(let vtag of visitor_tags){
-        console.log(vtag);
         for(let exhibit of exhibits_list){
-          console.log(exhibit);
-          console.log(exhibit.exhibit_tag)
           if(exhibit.exhibit_tag.indexOf(vtag[0]) >= 0){
             exhibit.point += 1;
             exhibit.basis.push(vtag[0]);

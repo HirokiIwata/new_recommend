@@ -144,8 +144,8 @@
 </template>
 
 <script>
-
-const sheetsApiUrl = 'https://script.google.com/macros/s/AKfycbwOYKsnjEqM6U6kT9amzgzRVIfV5DsfqhYUs6_v-V05KaEfOoW9/exec'
+import firebase from 'firebase'
+const firebaseUrl = 'https://ncsm-recommend.firebaseio.com/recommend_database';
 
 export default {
   layout: 'nested',
@@ -206,19 +206,10 @@ export default {
       selected_items: [],
       recommend_exhibits: [],
       jsonData: null,
+      visitor_id: null,
     }
   },
   methods: {
-    getData (apiUrl) {
-      // this.$jsonp(url, dataObj, timeout) で使える。 Vueコンポーネント内だとthisで呼び出せる。
-      this.$jsonp(sheetsApiUrl,{ callbackName: "callbackFunction" })
-      .then(json => {
-        // Success.
-        this.jsonData = json
-      }).catch(err => {
-        // Failed.
-      })
-    },
 
     show_result: function(event){
 
@@ -323,10 +314,7 @@ export default {
       }, 200);
 
       for(let vtag of visitor_tags){
-        console.log(vtag);
         for(let exhibit of exhibits_list){
-          console.log(exhibit);
-          console.log(exhibit.exhibit_tag)
           if(exhibit.exhibit_tag.indexOf(vtag[0]) >= 0){
             exhibit.point += 1;
             exhibit.basis.push(vtag[0]);
@@ -334,24 +322,61 @@ export default {
         }
       }
 
+      // exhibits_listからidとpointを抜き出して配列を作る
+      let post_data = {};
+      for(let exhibit of exhibits_list){
+        let str_id = exhibit.id.toString();
+        post_data[str_id] = exhibit.point
+      }
+
+      // id生成(10桁)
+      let date = new Date();
+      let visitor_id = Math.floor((date.getTime() + 25531000000) / 10) % 10000000000
+      this.visitor_id = visitor_id;
+      let addUrl = firebaseUrl + '/' + visitor_id + '.json'
+
+      var config = {
+          apiKey: "AIzaSyD1M4JLOP_K8DInWiUkpa45qr6fBTg1eBQ",
+          authDomain: "ncsm-recommend.firebaseapp.com",
+          databaseURL: "https://ncsm-recommend.firebaseio.com",
+          projectId: "ncsm-recommend",
+          storageBucket: "ncsm-recommend.appspot.com",
+          messagingSenderId: "330977772496",
+          appId: "1:330977772496:web:7602fc997bbfb9c1506fd5",
+          measurementId: "G-6MTTTTET5X"
+      };
+      if (!firebase.apps.length) {
+        firebase.initializeApp(config)
+      }
+
+      // セッションのみ維持
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        firebase.auth().signInAnonymously() // firebaseに匿名ログインする
+        .then(() => {
+          firebase.auth().onAuthStateChanged(user => {
+            if (user) { // ログイン状態になったら
+              firebase.database().ref('recommend_database/' + visitor_id).set(post_data)
+            } else { 
+              // ログイン状態にならなかったら
+            }
+          });
+        }).catch(signin_err => {
+          console.log(signin_err);
+        });
+      }).catch(set_err => {
+        console.log(set_err)
+      });
+
       exhibits_list.sort(function(a, b){
-	     if (a.point < b.point) return 1;
-	     if (a.point > b.point) return -1;
-       return 0;
+	      if (a.point < b.point) return 1;
+	      if (a.point > b.point) return -1;
+        return 0;
       });
 
       for(let i=0; i<recommend_num; i++){
         this.recommend_exhibits.push(exhibits_list[i])
       }
-
-      this.$jsonp(sheetsApiUrl,{ callbackName: "callbackFunction" })
-      .then(json => {
-        // Success.
-        this.jsonData = json;
-        console.log(json);
-      }).catch(err => {
-        // Failed.
-      })
     },
 
     get_checkbox: function(event){
