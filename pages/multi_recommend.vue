@@ -15,11 +15,11 @@
 
     <!-- 質問表示 -->
     <div
-    class="query"
-    v-for="(item,index) in data_query"
-    :key="index">
+      class="query"
+      v-for="(item,index) in data_query"
+      :key="index">
       <div
-      v-if="page_count==index+1">
+        v-if="page_count==index+1">
         <div v-for="item_a in item"
         :key="item_a.tag_id">
           <v-checkbox
@@ -35,71 +35,92 @@
 
     <!-- 推薦展示物表示 -->
     <div
-    v-if="page_count==-10000">
-      <v-layout column width="350px"
-      v-for="(item,index) in recommend_exhibits"
-      :key="index">
-        <v-flex>
-          <v-spacer><br></v-spacer>
-          <v-card light raised>
-            <v-chip color="orange" text-color="white" class="rank">
-              オススメ{{index+1}}位
-              <v-icon right>star</v-icon>
-            </v-chip>
-
-            <v-img
-              class="card_img"
-              :src="item.src"
-              width="350px"
-            >
-            </v-img>
-
-            <v-card-title primary-title class="primary-title">
-              <div>
-              <div class="headline">{{item.exhibit}}</div>
+      v-if="page_count==-10000"
+    >
+      <v-tabs
+        fixed-tabs
+        background-color="transparent"
+        color="primary"
+        dark
+        centered
+      >
+        <v-tab>
+          For You
+        </v-tab>
+        <v-tab>
+          For Your Group
+        </v-tab>
+        <v-tab-item>
+          <v-layout column width="350px"
+            v-for="(item,index) in recommend_exhibits"
+            :key="index">
+            <v-flex>
               <v-spacer><br></v-spacer>
+              <v-card light raised>
+                <v-chip color="red" text-color="white" class="rank">
+                  おすすめ{{index+1}}位
+                  <v-icon right>loyalty</v-icon>
+                </v-chip>
 
-              <div class="basis">
-                <span
-                v-for="tag in item.basis"
-                :key="tag">
-                  <v-chip
-                  class="basis"
-                  color="secondary"
-                  text-color="white"
-                  disable
-                  small>
-                    <v-icon>label</v-icon>{{ tag }}
-                  </v-chip>
-                </span>
-              </div>
-              </div>
-            </v-card-title>
+                <v-img
+                  class="card_img"
+                  :src="item.src"
+                  width="350px"
+                >
+                </v-img>
 
-            <v-card-actions class="actions">
-              <v-btn
-              flat
-              outline
-              color="purple"
-              :href="item.url"
-              target="_blank"
-              >解説を見る</v-btn>
-              <v-btn flat outline color="accent" @click="show[index] = !show[index]">
-                アクセス
-                <v-icon>{{ show[index] ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-              </v-btn>
-            </v-card-actions>
+                <v-card-title primary-title class="primary-title">
+                  <div>
+                  <div class="headline">{{item.exhibit}}</div>
+                  <v-spacer><br></v-spacer>
 
-            <v-slide-y-transition>
-              <v-img class="more" v-show="show[index]"
-                :src="item.map"
-                width="350px">
-              </v-img>
-            </v-slide-y-transition>
-          </v-card>
-          <v-spacer><br></v-spacer>
-        </v-flex>
-      </v-layout>
+                  <div class="basis">
+                    <span
+                    v-for="tag in item.basis"
+                    :key="tag">
+                      <v-chip
+                      class="basis"
+                      color="secondary"
+                      text-color="white"
+                      disable
+                      small>
+                        <v-icon>label</v-icon>{{ tag }}
+                      </v-chip>
+                    </span>
+                  </div>
+                  </div>
+                </v-card-title>
+
+                <v-card-actions class="actions">
+                  <v-btn
+                  flat
+                  outline
+                  color="purple"
+                  :href="item.url"
+                  target="_blank"
+                  >解説を見る</v-btn>
+                  <v-btn flat outline color="accent" @click="show[index] = !show[index]">
+                    アクセス
+                    <v-icon>{{ show[index] ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+                  </v-btn>
+                </v-card-actions>
+
+                <v-slide-y-transition>
+                  <v-img class="more" v-show="show[index]"
+                    :src="item.map"
+                    width="350px">
+                  </v-img>
+                </v-slide-y-transition>
+              </v-card>
+              <v-spacer><br></v-spacer>
+            </v-flex>
+          </v-layout>
+        </v-tab-item>
+        <v-tab-item>
+          ここにIDを入力してください
+        </v-tab-item>
+      </v-tabs>
+        
     </div>
 
     <div>
@@ -205,8 +226,9 @@ export default {
       visitor_tags: [],
       selected_items: [],
       recommend_exhibits: [],
-      jsonData: null,
       visitor_id: null,
+      tab_items: ['For-You', 'For-Your-Group'],
+      current_item: 'tab-For-You'
     }
   },
   methods: {
@@ -335,6 +357,7 @@ export default {
       this.visitor_id = visitor_id;
       let addUrl = firebaseUrl + '/' + visitor_id + '.json'
 
+      // firebaseへのアクセス
       var config = {
           apiKey: "AIzaSyD1M4JLOP_K8DInWiUkpa45qr6fBTg1eBQ",
           authDomain: "ncsm-recommend.firebaseapp.com",
@@ -349,23 +372,17 @@ export default {
         firebase.initializeApp(config)
       }
 
-      // セッションのみ維持
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      firebase.auth().signInAnonymously() // firebaseに匿名ログインする
       .then(() => {
-        firebase.auth().signInAnonymously() // firebaseに匿名ログインする
-        .then(() => {
-          firebase.auth().onAuthStateChanged(user => {
-            if (user) { // ログイン状態になったら
-              firebase.database().ref('recommend_database/' + visitor_id).set(post_data)
-            } else { 
-              // ログイン状態にならなかったら
-            }
-          });
-        }).catch(signin_err => {
-          console.log(signin_err);
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) { // ログイン状態になったら
+            firebase.database().ref('recommend_database/' + visitor_id).set(post_data)
+          } else { 
+            // ログイン状態にならなかったら
+          }
         });
-      }).catch(set_err => {
-        console.log(set_err)
+      }).catch(signin_err => {
+        console.log(signin_err);
       });
 
       exhibits_list.sort(function(a, b){

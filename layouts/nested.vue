@@ -30,12 +30,12 @@
               </v-list-tile-content>
             </v-list-tile>
 
-            <router-link to="/recommend_web">
+            <router-link to="/multi_recommend">
               <v-list-tile>
                 <v-list-tile-action>
                   <v-icon>web</v-icon>
                 </v-list-tile-action>
-                <v-list-tile-title>WEB推薦</v-list-tile-title>
+                <v-list-tile-title>展示物推薦</v-list-tile-title>
               </v-list-tile>
             </router-link>
 
