@@ -116,8 +116,10 @@
             </v-flex>
           </v-layout>
         </v-tab-item>
-        <v-tab-item>
-          ここにIDを入力してください
+        <v-tab-item
+          class="title">
+          <v-spacer><br></v-spacer>
+          あなたのIDは「{{ visitor_id }}」です
         </v-tab-item>
       </v-tabs>
         
