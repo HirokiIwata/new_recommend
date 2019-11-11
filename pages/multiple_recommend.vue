@@ -183,6 +183,8 @@
             </div>
         </v-tab-item>
         <v-tab-item v-if="page_count==-15000">
+          <v-spacer><br></v-spacer>
+          <v-card>あなたのIDは「{{ visitor_id }}」です</v-card>
           <v-layout column width="350px"
             v-for="(item,index) in multi_recommend_exhibits"
             :key="index">
@@ -245,7 +247,6 @@
                 </v-slide-y-transition>
               </v-card>
               <v-spacer><br></v-spacer>
-              <v-card>あなたのIDは「{{ visitor_id }}」です</v-card>
             </v-flex>
           </v-layout>
         </v-tab-item>
