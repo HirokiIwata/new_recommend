@@ -308,8 +308,9 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-const firebaseUrl = 'https://ncsm-recommend.firebaseio.com/recommend_database';
+const axios = require('axios');
+import firebase from 'firebase';
+const get_url = 'https://ncsm-recommend.firebaseio.com/recommend_database/';
 
 export default {
   layout: 'nested',
@@ -729,8 +730,6 @@ export default {
       this.interval_2 = setInterval(() => {
         if (this.value_2 === 110) {
           this.page_count = -15000;
-          //this.page_count = -10000;
-          console.log(this.page_count)
         }
         this.value_2 += 5;
       }, 200);
@@ -750,44 +749,37 @@ export default {
         firebase.initializeApp(config)
       }
 
-      firebase.auth().signInAnonymously() // firebaseに匿名ログインする
-      .then(() => {
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) { // ログイン状態になったら
-            for(let obj of this.ids){
-              firebase.database().ref('recommend_database/' + obj.id).once('value', function(snapshot){
-                let data = snapshot.val();
-                for(let key in data){
-                  let int_key = Number(key)
-                  console.log('key:' + key + ' value:' + data[key]);
-                  for(let detail of exhibits_list){
-                    console.log(detail.point, int_key)
-                    if(int_key == detail.id){
-                      detail.point += data[key]
-                      console.log('計算中です')
-                      break
-                    }
-                  }
-                }
-              });
+      for(let id_obj of this.ids){
+        axios.get(get_url + id_obj.id + '.json').then((res) => {
+          for(let key in res.data){
+            let int_key = Number(key)
+            for(let detail of exhibits_list){
+              if(int_key == detail.id){
+                detail.point += res.data[key]
+                console.log(detail.id, detail.point)
+                break
+              }
             }
-          } else { 
-            // ログイン状態にならなかったら
           }
         });
-      }).catch(signin_err => {
-        console.log(signin_err);
-      });
-
-      exhibits_list.sort(function(a, b){
-	      if (a.point < b.point) return 1;
-	      if (a.point > b.point) return -1;
-        return 0;
-      });
-
-      for(let i=0; i<recommend_num; i++){
-        this.multi_recommend_exhibits.push(exhibits_list[i])
       }
+
+      setTimeout(
+        () => {
+          exhibits_list.sort(function(a, b){
+            if (a.point < b.point) return 1;
+            if (a.point > b.point) return -1;
+            return 0;
+          });
+
+          for(let i=0; i<recommend_num; i++){
+            this.multi_recommend_exhibits.push(exhibits_list[i])
+            console.log(i)
+            console.log(this.multi_recommend_exhibits)
+          }
+        }, 
+        "2000"
+      );
     },
 
     initialize () {
