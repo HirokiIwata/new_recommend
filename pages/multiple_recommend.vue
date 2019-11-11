@@ -760,9 +760,11 @@ export default {
                 for(let key in data){
                   let int_key = Number(key)
                   console.log('key:' + key + ' value:' + data[key]);
-                  for(let detail in exhibits_list){
+                  for(let detail of exhibits_list){
+                    console.log(detail.point, int_key)
                     if(int_key == detail.id){
                       detail.point += data[key]
+                      console.log('計算中です')
                       break
                     }
                   }
