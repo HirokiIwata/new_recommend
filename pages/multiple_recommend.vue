@@ -589,8 +589,7 @@ export default {
     web_recommend: function (event) {
       let array = this.v_tags;
       let v_tags; //来館者タグ一覧
-      const q_tag_num = 14 //一回あたりのタグ提示数
-      let q_times = []
+      let q_times = [11, 11, 10, 10]
       let query = []
 
       // 来館者タグ候補をシャッフル
@@ -601,25 +600,6 @@ export default {
         array[r] = tmp;
         v_tags = array
       }
-      // 質問クエリの単語数を決める
-      let tmp = v_tags.length%q_tag_num
-      if (tmp<=Math.ceil(q_tag_num/2)){ // ceil: q_tag_num/2より大きい最小の整数を算出
-        for (let i=0; i<tmp; i++){
-          q_times.push(q_tag_num+1);
-        }
-        tmp = (v_tags.length-q_times.length*(q_tag_num+1))/q_tag_num
-        for (let i=0; i<tmp; i++){
-          q_times.push(q_tag_num);
-        }
-      }else{
-        for (let i=0; i<q_tag_num-tmp; i++){
-          q_times.push(q_tag_num-1);
-        }
-        tmp = (v_tags.length-q_times.length*(q_tag_num-1))/q_tag_num
-        for (let i=0; i<tmp; i++){
-          q_times.push(q_tag_num);
-        }
-      } // q_times = [8, 8, 7, 7, 7, 7, 7, 7, 7]
 
       // 質問クエリを作成する
       for (let i=0; i<q_times.length; i++){
@@ -774,8 +754,6 @@ export default {
 
           for(let i=0; i<recommend_num; i++){
             this.multi_recommend_exhibits.push(exhibits_list[i])
-            console.log(i)
-            console.log(this.multi_recommend_exhibits)
           }
         }, 
         "2000"
