@@ -30,7 +30,7 @@
               </v-list-tile-content>
             </v-list-tile>
 
-            <router-link to="/multi_recommend">
+            <router-link to="/multiple_recommend">
               <v-list-tile>
                 <v-list-tile-action>
                   <v-icon>web</v-icon>
