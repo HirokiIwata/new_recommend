@@ -24,7 +24,7 @@
           <v-layout
             row wrap>
             <v-flex
-              v-for="item_a in item.slice(0,Math.floor(item.length))"
+              v-for="item_a in item.slice(0, (Math.floor(item.length/2) + 1))"
               :key="item_a.tag_id"
               xs6 sm6 md6>
               <v-checkbox
@@ -38,13 +38,12 @@
           <v-layout
             row wrap>
             <v-flex
-              v-for="item_b in item.slice(Math.floor(item.length),item.length-1)"
+              v-for="item_b in item.slice(Math.floor(item.length/2), item.length-1)"
               :key="item_b.tag_id"
               xs6 sm6 md6>
               <v-checkbox
-                height = 2
+                height = 3
                 v-model="selected_items"
-                :size = "1000"
                 :label="item_b.tag"
                 :value="[item_b.tag,item_b.tag_id]">
               </v-checkbox>
