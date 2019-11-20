@@ -406,6 +406,7 @@ export default {
       visitor_tags: [],
       selected_items: [],
       exhibit_information: [],
+      original_recommend_exhibits: [],
       recommend_exhibits: [],
       multi_recommend_exhibits: [],
       visitor_id: null,
@@ -628,15 +629,15 @@ export default {
 
       this.initialize();
 
+      for(let exhibit of exhibits_list){
+        this.exhibit_information.push(exhibit)
+      }
+
       exhibits_list.sort(function(a, b){
 	      if (a.point < b.point) return 1;
 	      if (a.point > b.point) return -1;
         return 0;
       });
-
-      for(let exhibit of exhibits_list){
-        this.exhibit_information.push(exhibit)
-      }
 
       for(let i=0; i<recommend_num; i++){
         this.recommend_exhibits.push(exhibits_list[i])
