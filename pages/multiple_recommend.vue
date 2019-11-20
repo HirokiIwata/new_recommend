@@ -64,6 +64,7 @@
         color="primary"
         dark
         centered
+        v-model="active_tab"
       >
         <v-tab>
           For You
@@ -78,7 +79,7 @@
             <v-flex>
               <v-spacer><br></v-spacer>
               <v-card light raised>
-                <v-chip color="red" text-color="white" class="rank">
+                <v-chip color="orange" text-color="white" class="rank">
                   おすすめ{{index+1}}位
                   <v-icon right>loyalty</v-icon>
                 </v-chip>
@@ -96,12 +97,19 @@
                   <v-spacer><br></v-spacer>
 
                   <div class="basis">
+                    <v-chip outline color="red" text-color="red" label>
+                        <v-avatar>
+                          <v-icon>account_circle</v-icon>
+                        </v-avatar>
+                        あなたが選んだ単語
+                    </v-chip>
+                    <br>
                     <span
                     v-for="tag in item.basis"
                     :key="tag">
                       <v-chip
                       class="basis"
-                      color="secondary"
+                      color="red"
                       text-color="white"
                       disable
                       small>
@@ -147,7 +155,7 @@
                 class="elevation-1"
               >
                 <template slot="items" slot-scope="props">
-                  <td class="text-xs-center">{{ props.item.id }}</td>
+                  <td class="text-xs-center"><div class="id">{{ props.item.id }}</div></td>
                 </template>
               </v-data-table>
               <v-spacer><br></v-spacer>
@@ -158,7 +166,7 @@
                 class="elevation-1"
               >
                 <template slot="items" slot-scope="props">
-                  <td class="text-xs-center">{{ props.item.id }}</td>
+                  <td class="text-xs-center"><div class="id">{{ props.item.id }}</div></td>
                   <td class="justify-center layout px-0">
                     <v-btn icon class="mx-0" @click="editItem(props.item)">
                       <v-icon color="teal">edit</v-icon>
@@ -200,7 +208,7 @@
             hide-actions
             class="elevation-1">
             <template slot="items" slot-scope="props">
-              <td class="text-xs-center">{{ props.item.id }}</td>
+              <td class="text-xs-center"><div class="id">{{ props.item.id }}</div></td>
             </template>
           </v-data-table>
           <v-layout column width="350px"
@@ -209,7 +217,7 @@
             <v-flex>
               <v-spacer><br></v-spacer>
               <v-card light raised>
-                <v-chip color="red" text-color="white" class="rank">
+                <v-chip color="orange" text-color="white" class="rank">
                   おすすめ{{index+1}}位
                   <v-icon right>loyalty</v-icon>
                 </v-chip>
@@ -227,13 +235,19 @@
                     <v-spacer><br></v-spacer>
 
                     <div class="basis">
-                      あなたが選んだ単語<br>
+                      <v-chip outline color="red" text-color="red" label>
+                        <v-avatar>
+                          <v-icon>account_circle</v-icon>
+                        </v-avatar>
+                        あなたが選んだ単語
+                      </v-chip>
+                      <br>
                       <span
                         v-for="tag in item.basis"
                         :key="tag">
                         <v-chip
                           class="basis"
-                          color="secondary"
+                          color="red"
                           text-color="white"
                           disable
                           small>
@@ -242,13 +256,19 @@
                       </span>
                     </div>
                     <div class="basis">
-                      あなた以外が選んだ単語<br>
+                      <v-chip outline color="indigo" text-color="indigo" label>
+                        <v-avatar>
+                          <v-icon>account_circle</v-icon>
+                        </v-avatar>
+                        あなた以外が選んだ単語
+                      </v-chip>
+                      <br>
                       <span
                         v-for="tag in item.group_basis"
                         :key="tag">
                         <v-chip
                           class="basis"
-                          color="secondary"
+                          color="indigo"
                           text-color="white"
                           disable
                           small>
@@ -410,6 +430,7 @@ export default {
       recommend_exhibits: [],
       multi_recommend_exhibits: [],
       visitor_id: null,
+      active_tab: 0,
       dialog: false,
       header1: [
         {
@@ -634,8 +655,8 @@ export default {
       }
 
       exhibits_list.sort(function(a, b){
-	      if (a.point < b.point) return 1;
-	      if (a.point > b.point) return -1;
+        if (a.point < b.point) return 1;
+        if (a.point > b.point) return -1;
         return 0;
       });
 
@@ -689,6 +710,7 @@ export default {
       // 「分析中...」の表示
       this.interval_2 = setInterval(() => {
         if (this.value_2 === 110) {
+          this.active_tab = 1;
           this.page_count = -15000;
         }
         this.value_2 += 5;
@@ -733,8 +755,15 @@ export default {
             }
           }
 
+          let ids = this.ids;
           exhibits_list.sort(function(a, b){
             if (a.point < b.point) return 1;
+            if ((ids.length == 1) && (a.point == b.point) && (a.basis.length != 0 && a.group_basis.length != 0) && (b.basis.length == 0 || b.group_basis.length == 0)){
+              return -1;
+            }
+            if ((ids.length == 1) && (a.point == b.point) && (b.basis.length != 0 && b.group_basis.length != 0) && (a.basis.length == 0 || a.group_basis.length == 0)){
+              return 1;
+            }
             if (a.point > b.point) return -1;
             return 0;
           });
@@ -824,6 +853,9 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+.id {
+  font-size: 16px;
 }
 
 </style>
