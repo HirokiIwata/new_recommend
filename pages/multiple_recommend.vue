@@ -67,10 +67,10 @@
         v-model="active_tab"
       >
         <v-tab>
-          For You
+          ひとりで
         </v-tab>
         <v-tab>
-          For Your Group
+          みんなで
         </v-tab>
         <v-tab-item>
           <v-layout column width="350px"
@@ -617,7 +617,9 @@ export default {
 
       // id生成(10桁)
       let date = new Date();
-      let visitor_id = Math.floor((date.getTime() + 25531000000) / 10) % 10000000000
+      // 実証実験仕様
+      let unixtime = Math.floor(date.getTime() / 10)
+      let visitor_id = unixtime % 10000000
       this.visitor_id = visitor_id;
 
       // firebaseへのアクセス
